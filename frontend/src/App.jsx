@@ -1,7 +1,15 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { calcularCBR } from './lib/api'
 import ChartCBR from './components/ChartCBR'
 import AppLogo from './components/AppLogo'
+import {
+  allowedEmails,
+  isAllowedEmail,
+  isFirebaseConfigured,
+  logoutFromGoogle,
+  signInWithGoogle,
+  subscribeToGoogleAuth,
+} from './lib/firebaseAuth'
 
 const basePoints = [
   { penetracion: 0, carga: 0 },
@@ -477,6 +485,8 @@ function formatDisplayDate(value) {
 }
 
 export default function App() {
+  const [authUser, setAuthUser] = useState(undefined)
+  const [authMessage, setAuthMessage] = useState('')
   const [projectInfo, setProjectInfo] = useState(createInitialProjectInfo)
   const [sampleInfo, setSampleInfo] = useState(createInitialSampleInfo)
   const [config, setConfig] = useState(createInitialConfig)
@@ -485,6 +495,13 @@ export default function App() {
   const [result, setResult] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+
+  useEffect(() => {
+    const unsubscribe = subscribeToGoogleAuth((user) => {
+      setAuthUser(user ?? null)
+    })
+    return unsubscribe
+  }, [])
 
   const activeMoldes = useMemo(() => moldes.slice(0, moldCount), [moldes, moldCount])
   const moldPreviews = useMemo(
@@ -616,6 +633,28 @@ export default function App() {
     [result]
   )
 
+  const hasAllowedUser = !!authUser?.email && isAllowedEmail(authUser.email)
+
+  async function handleGoogleLogin() {
+    setAuthMessage('')
+    try {
+      const user = await signInWithGoogle()
+      if (!isAllowedEmail(user?.email)) {
+        setAuthMessage('Tu correo no esta autorizado para usar esta aplicacion.')
+        await logoutFromGoogle()
+        return
+      }
+      setAuthMessage('')
+    } catch (err) {
+      setAuthMessage(err.message || 'No se pudo iniciar sesion con Google.')
+    }
+  }
+
+  async function handleGoogleLogout() {
+    await logoutFromGoogle()
+    setAuthMessage('')
+  }
+
   function handleExportPdf() {
     window.print()
   }
@@ -639,6 +678,92 @@ export default function App() {
       year: 'numeric',
     }).format(new Date())
   }, [projectInfo.fecha])
+
+  if (!isFirebaseConfigured) {
+    return (
+      <div className="page auth-page">
+        <section className="card auth-card">
+          <div className="print-brand auth-brand">
+            <AppLogo />
+            <div>
+              <p className="section-kicker">GeoServi Lab®</p>
+              <h2>Acceso con Google pendiente</h2>
+              <p className="print-copy">
+                Configura Firebase y la lista de correos permitidos antes de usar la aplicacion.
+              </p>
+            </div>
+          </div>
+          <div className="summary-grid">
+            <div className="summary-item">
+              <span>Variables requeridas</span>
+              <strong>VITE_FIREBASE_API_KEY, AUTH_DOMAIN, PROJECT_ID y APP_ID</strong>
+            </div>
+            <div className="summary-item">
+              <span>Correos permitidos</span>
+              <strong>VITE_ALLOWED_EMAILS</strong>
+            </div>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
+  if (authUser === undefined) {
+    return (
+      <div className="page auth-page">
+        <section className="card auth-card">
+          <div className="print-brand auth-brand">
+            <AppLogo />
+            <div>
+              <p className="section-kicker">GeoServi Lab®</p>
+              <h2>Verificando acceso</h2>
+              <p className="print-copy">Estamos comprobando tu sesion de Google.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    )
+  }
+
+  if (!authUser || !hasAllowedUser) {
+    return (
+      <div className="page auth-page">
+        <section className="card auth-card">
+          <div className="print-brand auth-brand">
+            <AppLogo />
+            <div>
+              <p className="section-kicker">GeoServi Lab®</p>
+              <h2>Acceso restringido</h2>
+              <p className="print-copy">
+                Inicia sesion con Google. Solo los correos autorizados pueden ingresar al sistema.
+              </p>
+            </div>
+          </div>
+          <div className="summary-grid">
+            <div className="summary-item">
+              <span>Correo autorizado actual</span>
+              <strong>{allowedEmails.join(', ') || 'No configurado'}</strong>
+            </div>
+            <div className="summary-item">
+              <span>Estado</span>
+              <strong>{authUser?.email ? `Sin permiso: ${authUser.email}` : 'Sin iniciar sesion'}</strong>
+            </div>
+          </div>
+          {authMessage && <p className="error">{authMessage}</p>}
+          <div className="header-pills">
+            <button type="button" className="primary-action" onClick={handleGoogleLogin}>
+              Ingresar con Google
+            </button>
+            {!!authUser?.email && (
+              <button type="button" className="secondary-action" onClick={handleGoogleLogout}>
+                Cerrar sesion
+              </button>
+            )}
+          </div>
+        </section>
+      </div>
+    )
+  }
 
   return (
     <div className="page">
@@ -987,8 +1112,12 @@ export default function App() {
             </div>
             </div>
             <div className="header-pills no-print">
+              <div className="pill">{authUser.email}</div>
               <button type="button" className="secondary-action" onClick={handleResetCalculation}>
                 Iniciar otro calculo
+              </button>
+              <button type="button" className="secondary-action" onClick={handleGoogleLogout}>
+                Cerrar sesion
               </button>
               <button type="button" className="primary-action" onClick={handleExportPdf}>
                 Exportar PDF

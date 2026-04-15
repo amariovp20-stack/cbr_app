@@ -92,6 +92,18 @@ https://tu-backend.vercel.app
 VITE_API_URL=https://tu-backend.vercel.app
 ```
 
+Si activas acceso con Google usando Firebase Auth, agrega tambien:
+
+```env
+VITE_ALLOWED_EMAILS=amariovp20@gmail.com
+VITE_FIREBASE_API_KEY=tu_api_key
+VITE_FIREBASE_AUTH_DOMAIN=tu-proyecto.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=tu-proyecto
+VITE_FIREBASE_APP_ID=tu_app_id
+```
+
+Con `VITE_ALLOWED_EMAILS` puedes poner varios correos separados por coma.
+
 Despues vuelve a desplegar el frontend para que use la API publicada.
 
 ## Próxima etapa sugerida
