@@ -3,7 +3,6 @@ import { calcularCBR } from './lib/api'
 import ChartCBR from './components/ChartCBR'
 import AppLogo from './components/AppLogo'
 import {
-  allowedEmails,
   isAllowedEmail,
   isFirebaseConfigured,
   logoutFromGoogle,
@@ -741,8 +740,8 @@ export default function App() {
           </div>
           <div className="summary-grid">
             <div className="summary-item">
-              <span>Correo autorizado actual</span>
-              <strong>{allowedEmails.join(', ') || 'No configurado'}</strong>
+              <span>Acceso</span>
+              <strong>Restringido a usuarios autorizados</strong>
             </div>
             <div className="summary-item">
               <span>Estado</span>
