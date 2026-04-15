@@ -1,0 +1,14 @@
+.venv/
+.venv-1/
+backend/__pycache__/
+backend/Lib/
+backend/Scripts/
+frontend/node_modules/
+frontend/dist/
+*.log
+*.err.log
+.DS_Store
+Thumbs.db
+.vercel/
+frontend/.env.local
+frontend/.env.*.local
