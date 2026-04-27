@@ -95,7 +95,7 @@ VITE_API_URL=https://tu-backend.vercel.app
 Si activas acceso con Google usando Firebase Auth, agrega tambien:
 
 ```env
-VITE_ALLOWED_EMAILS=amariovp20@gmail.com
+VITE_ALLOWED_EMAILS=amariovp20@gmail.com,pacoridurandestiwarandrus@gmail.com,allyscastro8@gmail.com,andavid.vel1210@gmail.com,dannavarro0105@gmail.com,karinahuansi223@gmail.com,gisell.sandoval@sismoingps.com
 VITE_FIREBASE_API_KEY=tu_api_key
 VITE_FIREBASE_AUTH_DOMAIN=tu-proyecto.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=tu-proyecto
