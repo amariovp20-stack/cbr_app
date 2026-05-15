@@ -95,7 +95,7 @@ VITE_API_URL=https://tu-backend.vercel.app
 Si activas acceso con Google usando Firebase Auth, agrega tambien:
 
 ```env
-VITE_ALLOWED_EMAILS=amariovp20@gmail.com,pacoridurandestiwarandrus@gmail.com,allyscastro8@gmail.com,andavid.vel1210@gmail.com,dannavarro0105@gmail.com,karinahuansi223@gmail.com,gisell.sandoval@sismoingps.com
+VITE_ALLOWED_EMAILS=amariovp20@gmail.com,pacoridurandestiwarandrus@gmail.com,allyscastro8@gmail.com,andavid.vel1210@gmail.com,dannavarro0105@gmail.com,karinahuansi223@gmail.com,gisell.sandoval@sismoingps.com,jchapim@unsa.edu.pe,jbacapinelo@gmail.com
 VITE_FIREBASE_API_KEY=tu_api_key
 VITE_FIREBASE_AUTH_DOMAIN=tu-proyecto.firebaseapp.com
 VITE_FIREBASE_PROJECT_ID=tu-proyecto
@@ -104,7 +104,14 @@ VITE_FIREBASE_APP_ID=tu_app_id
 
 Con `VITE_ALLOWED_EMAILS` puedes poner varios correos separados por coma.
 
-Despues vuelve a desplegar el frontend para que use la API publicada.
+Despues de agregar o cambiar correos en Vercel, vuelve a desplegar el frontend para que la aplicacion tome la nueva lista de acceso.
+
+Pasos rapidos en Vercel:
+
+1. Entra al proyecto del frontend.
+2. Abre **Settings > Environment Variables**.
+3. Actualiza `VITE_ALLOWED_EMAILS` con los correos permitidos separados por coma.
+4. Guarda el cambio y ejecuta un nuevo **Redeploy**.
 
 ## Próxima etapa sugerida
 
