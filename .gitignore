@@ -12,3 +12,5 @@ Thumbs.db
 .vercel/
 frontend/.env.local
 frontend/.env.*.local
+
+.vercel
